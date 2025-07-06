@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>نموذج التسجيل</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      padding: 30px;
+      margin: 0;
+    }
+
+    h2 {
+      color: #00cec9;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    form {
+      background-color: #1e1e1e;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background-color: #333;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #00b894;
+      padding: 12px 20px;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #019875;
+    }
+
+    #response {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>نموذج تسجيل البيانات</h2>
+
+  <form id="myForm">
+    <input type="text" name="fullname" placeholder="الاسم الكامل" required>
+    <input type="tel" name="mobile" placeholder="رقم الموبايل" required>
+    <input type="number" name="grade" placeholder="الدرجة (يجب أن تكون 255 أو أكثر)" required>
+
+    <select name="admin" required>
+      <option value="" disabled selected>اختر الإدارة</option>
+      <option value="إدارة منتزه أول">إدارة منتزه أول</option>
+      <option value="إدارة منتزه ثاني">إدارة منتزه ثاني</option>
+      <option value="إدارة شرق">إدارة شرق</option>
+    </select>
+
+    <input type="text" name="address" placeholder="العنوان" required>
+    <input type="date" name="birthdate" placeholder="تاريخ الميلاد" required>
+
+    <button type="submit">إرسال</button>
+  </form>
+
+  <p id="response"></p>
+
+  <script>
+    document.getElementById("myForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const grade = parseInt(formData.get("grade"));
+      const responseBox = document.getElementById("response");
+
+      if (isNaN(grade) || grade < 255) {
+        responseBox.innerText = "❌ للأسف لا يمكنك المشاركة لأن درجتك أقل من 255.";
+        responseBox.style.color = "#ff7675";
+        return;
+      }
+
+      fetch("https://script.google.com/macros/s/AKfycbxaxf2WpkPApEksyYhLi6u0xZOYAwgVncmuMGM0SwY8LahheJaBIMOjc2SZpTb_UNiRcw/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(text => {
+        responseBox.innerText = text;
+        responseBox.style.color = "#55efc4";
+        form.reset();
+      })
+      .catch(err => {
+        responseBox.innerText = "❌ حدث خطأ أثناء الإرسال.";
+        responseBox.style.color = "#ff7675";
+      });
+    });
+  </script>
+
+</body>
+</html>
